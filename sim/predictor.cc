@@ -19,7 +19,24 @@ PREDICTOR::PREDICTOR(void)
 
 bool PREDICTOR::GetPrediction(UINT32 PC)
 {
-  return true;
+  int index = Hash(PC);
+
+  // x0 is always set to 0, providing a "bias" input
+  y += table[index][0];
+
+  for (int i = 1; i < HIST_LEN; i++)
+  {
+    if (ghr[i - 1])
+    {
+      y += table[index][i];
+    }
+    else
+    {
+      y -= table[index][i];
+    }
+  }
+
+  return y >= 0;
 }
 
 void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget)
