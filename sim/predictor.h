@@ -3,15 +3,18 @@
 
 #include "utils.h"
 #include "tracer.h"
+#include <bitset>
 
 #define UINT16 unsigned short int
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
+#define HIST_LEN 62
 
 class PREDICTOR
 {
 private:
+  bitset<HIST_LEN> ghr;
+  int table[512][HIST_LEN + 1];
+  int y;
+
 public:
   // The interface to the four functions below CAN NOT be changed
 
@@ -23,5 +26,4 @@ public:
   // Contestants can define their own functions below
 };
 
-/***********************************************************/
 #endif
