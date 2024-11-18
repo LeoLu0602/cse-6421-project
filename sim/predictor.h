@@ -6,13 +6,14 @@
 #include <bitset>
 
 #define UINT16 unsigned short int
-#define HIST_LEN 62
+#define HIST_LEN 62 // history length
+#define TABLE_LEN 512 // table length
 
 class PREDICTOR
 {
 private:
   bitset<HIST_LEN> ghr;
-  int table[512][HIST_LEN + 1];
+  int table[TABLE_LEN][HIST_LEN + 1];
   int y;
 
 public:
