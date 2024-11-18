@@ -24,6 +24,7 @@ public:
   void TrackOtherInst(UINT32 PC, OpType opType, UINT32 branchTarget);
 
   // Contestants can define their own functions below
+  UINT32 Hash(UINT32 PC);
 };
 
 #endif
