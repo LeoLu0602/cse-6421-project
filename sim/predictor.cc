@@ -23,7 +23,7 @@ bool PREDICTOR::GetPrediction(UINT32 PC)
   UINT32 index = Hash(PC);
 
   // x0 is always set to 1, providing a "bias" input
-  y += table[index][0];
+  y = table[index][0];
 
   for (int i = 1; i < HIST_LEN; i++)
   {
