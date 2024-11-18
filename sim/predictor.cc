@@ -36,5 +36,5 @@ void PREDICTOR::TrackOtherInst(UINT32 PC, OpType opType, UINT32 branchTarget)
 
 UINT32 PREDICTOR::Hash(UINT32 PC)
 {
-  return 0; // tmp
+  return PC % TABLE_LEN;
 }
