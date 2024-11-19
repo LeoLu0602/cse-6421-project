@@ -1,15 +1,16 @@
 #include "predictor.h"
 #include <cstdlib> // For abs()
+#include <cmath>
 
 // Total predictor storage should not exceed 128KB.
 
 PREDICTOR::PREDICTOR(void)
 {
-  ghr = bitset<HIST_LEN>();
+  ghr = bitset<59>();
 
-  for (int i = 0; i < TABLE_LEN; i++)
+  for (int i = 0; i < 512; i++)
   {
-    for (int j = 0; j < HIST_LEN; j++)
+    for (int j = 0; j <= 59; j++)
     {
       table[i][j] = 0;
     }
@@ -25,7 +26,7 @@ bool PREDICTOR::GetPrediction(UINT32 PC)
   // x0 is always set to 1, providing a "bias" input
   y = table[index][0];
 
-  for (int i = 1; i < HIST_LEN; i++)
+  for (int i = 1; i <= 59; i++)
   {
     if (ghr[i - 1])
     {
@@ -44,21 +45,21 @@ void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32
 {
   UINT32 index = Hash(PC);
 
-  if (resolveDir != predDir || abs(y) <= THRESHOLD)
+  if (resolveDir != predDir || abs(y) <= floor(1.93 * 59 + 14))
   {
     int t = resolveDir ? 1 : -1;
     int x = 1;
 
     table[index][0] += t * x;
 
-    for (int i = 1; i < HIST_LEN; i++)
+    for (int i = 1; i <= 59; i++)
     {
       x = ghr[i - 1] ? 1 : -1;
       table[index][i] += t * x;
     }
   }
 
-  ghr = ghr << 1;
+  ghr = (ghr << 1);
   ghr.set(0, resolveDir);
 }
 
@@ -72,5 +73,5 @@ void PREDICTOR::TrackOtherInst(UINT32 PC, OpType opType, UINT32 branchTarget)
 
 UINT32 PREDICTOR::Hash(UINT32 PC)
 {
-  return PC % TABLE_LEN;
+  return PC % 512;
 }

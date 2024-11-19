@@ -4,18 +4,14 @@
 #include "utils.h"
 #include "tracer.h"
 #include <bitset>
-#include <cmath>
 
 #define UINT16 unsigned short int
-#define HIST_LEN 62   // history length
-#define TABLE_LEN 512 // table length
-#define THRESHOLD floor(1.93 * HIST_LEN + 14)
 
 class PREDICTOR
 {
 private:
-  bitset<HIST_LEN> ghr;
-  int table[TABLE_LEN][HIST_LEN + 1];
+  bitset<59> ghr;
+  int table[512][60];
   int y;
 
 public:
