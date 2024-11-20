@@ -38,7 +38,7 @@ bool PREDICTOR::GetPrediction(UINT32 PC)
     }
   }
 
-  return y >= 0;
+    return y >= 0;
 }
 
 void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget)
@@ -48,14 +48,22 @@ void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32
   if (resolveDir != predDir || abs(y) <= floor(1.93 * 59 + 14))
   {
     int t = resolveDir ? 1 : -1;
-    int x = 1;
+    int x = 1; // x0 is always set to 1, providing a "bias" input
+    int8_t new_w = 0;
 
-    table[index][0] += t * x;
-
-    for (int i = 1; i <= 59; i++)
+    for (int i = 0; i <= 59; i++)
     {
-      x = ghr[i - 1] ? 1 : -1;
-      table[index][i] += t * x;
+      if (i > 0)
+      {
+        x = ghr[i - 1] ? 1 : -1;
+      }
+
+      // to prevent overflow (range: [-128, 127])
+      new_w = table[index][i] + t * x;
+      new_w = (new_w > 127) ? 127 : (new_w < -128) ? -128
+                                                   : new_w;
+
+      table[index][i] = new_w;
     }
   }
 
