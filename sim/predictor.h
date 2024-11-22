@@ -15,7 +15,7 @@
 // GHR: 59 bits
 // Table: 546 * (59 + 1) * 8 bits
 //
-// 62 bits +  546 * 60 * 8 bits ≈ 32 KB
+// 59 bits + 546 * 60 * 8 bits ≈ 32 KB
 ////////////////////////////////////////////////
 
 class PREDICTOR
@@ -23,7 +23,7 @@ class PREDICTOR
 private:
   bitset<59> ghr;
   // Use int8_t instead of int to fit more perceptrons under budget
-  int8_t table[546][59];
+  int8_t table[546][60];
   int y;
 
 public:
