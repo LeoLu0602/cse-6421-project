@@ -2,15 +2,13 @@
 #include <cstdlib> // For abs()
 #include <cmath>
 
-// Total predictor storage should not exceed 128KB.
-
 PREDICTOR::PREDICTOR(void)
 {
-  ghr = bitset<59>();
+  ghr = bitset<62>();
 
-  for (int i = 0; i < 512; i++)
+  for (int i = 0; i < 2080; i++)
   {
-    for (int j = 0; j <= 59; j++)
+    for (int j = 0; j <= 62; j++)
     {
       table[i][j] = 0;
     }
@@ -26,7 +24,7 @@ bool PREDICTOR::GetPrediction(UINT32 PC)
   // x0 is always set to 1, providing a "bias" input
   y = table[index][0];
 
-  for (int i = 1; i <= 59; i++)
+  for (int i = 1; i <= 62; i++)
   {
     if (ghr[i - 1])
     {
@@ -38,20 +36,20 @@ bool PREDICTOR::GetPrediction(UINT32 PC)
     }
   }
 
-    return y >= 0;
+  return y >= 0;
 }
 
 void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32 branchTarget)
 {
   UINT32 index = Hash(PC);
 
-  if (resolveDir != predDir || abs(y) <= floor(1.93 * 59 + 14))
+  if (resolveDir != predDir || abs(y) <= floor(1.93 * 62 + 14))
   {
     int t = resolveDir ? 1 : -1;
     int x = 1; // x0 is always set to 1, providing a "bias" input
     int8_t new_w = 0;
 
-    for (int i = 0; i <= 59; i++)
+    for (int i = 0; i <= 62; i++)
     {
       if (i > 0)
       {
@@ -81,5 +79,5 @@ void PREDICTOR::TrackOtherInst(UINT32 PC, OpType opType, UINT32 branchTarget)
 
 UINT32 PREDICTOR::Hash(UINT32 PC)
 {
-  return PC % 512;
+  return PC % 2080;
 }

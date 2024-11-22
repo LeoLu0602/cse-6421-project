@@ -7,21 +7,23 @@
 
 #define UINT16 unsigned short int
 
+// Total predictor storage should not exceed 128KB.
+
 /////////////// HARDWARE BUDGET ////////////////
 // Budget: 32KB
 //
-// GHR: 59 bits
-// Table: 512 * (59 + 1) * 8 bits
+// GHR: 62 bits
+// Table: 2080 * (62 + 1) * 8 bits
 //
-// 59 bits + 512 * 60 * 8 bits ≈ 30 KB
+// 62 bits + 2080 * 63 * 8 bits ≈ 128 KB
 ////////////////////////////////////////////////
 
 class PREDICTOR
 {
 private:
-  bitset<59> ghr;
+  bitset<62> ghr;
   // Use int8_t instead of int to fit more perceptrons under budget
-  int8_t table[512][60];
+  int8_t table[2080][63];
   int y;
 
 public:
