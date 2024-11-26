@@ -3,7 +3,7 @@
 #include <cmath>
 
 #define HIST_LEN 62
-#define TABLE_LEN 1024
+#define TABLE_LEN 512
 
 PREDICTOR::PREDICTOR(void)
 {

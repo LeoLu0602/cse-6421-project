@@ -23,7 +23,7 @@ class PREDICTOR
 private:
   bitset<62> ghr;
   // Use int8_t instead of int to fit more perceptrons under budget
-  int8_t table[1024][63];
+  int8_t table[512][63];
   int y;
 
 public:
