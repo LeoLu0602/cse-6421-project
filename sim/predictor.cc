@@ -2,13 +2,15 @@
 #include <cstdlib> // For abs()
 #include <cmath>
 
-#define HIST_LEN 59
+#define HIST_LEN 62
 #define TABLE_LEN 512
 
 PREDICTOR::PREDICTOR(void)
 {
   ghr = bitset<HIST_LEN>();
 
+  // Each row in the table contains HIST_LEN + 1 perceptrons
+  // w0...n, n = HIST_LEN
   for (int i = 0; i < TABLE_LEN; i++)
   {
     for (int j = 0; j <= HIST_LEN; j++)
@@ -24,19 +26,13 @@ bool PREDICTOR::GetPrediction(UINT32 PC)
 {
   UINT32 index = Hash(PC);
 
-  // x0 is always set to 1, providing a "bias" input
-  y = table[index][0];
+  y = 0; // reset y
 
-  for (int i = 1; i <= HIST_LEN; i++)
+  for (int i = 0; i <= HIST_LEN; i++)
   {
-    if (ghr[i - 1])
-    {
-      y += table[index][i];
-    }
-    else
-    {
-      y -= table[index][i];
-    }
+    int8_t x = (i == 0 || ghr[i - 1]) ? 1 : -1; // x0 is always set to 1, providing a "bias" input
+
+    y += x * table[index][i];
   }
 
   return y >= 0;
@@ -48,19 +44,14 @@ void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32
 
   if (resolveDir != predDir || abs(y) <= floor(1.93 * HIST_LEN + 14))
   {
-    int t = resolveDir ? 1 : -1;
-    int x = 1; // x0 is always set to 1, providing a "bias" input
-    int8_t new_w = 0;
+    int8_t t = resolveDir ? 1 : -1;
 
     for (int i = 0; i <= HIST_LEN; i++)
     {
-      if (i > 0)
-      {
-        x = ghr[i - 1] ? 1 : -1;
-      }
+      int8_t x = (i == 0 || ghr[i - 1]) ? 1 : -1; // x0 is always set to 1, providing a "bias" input
+      int new_w = table[index][i] + t * x;
 
       // to prevent overflow (range: [-128, 127])
-      new_w = table[index][i] + t * x;
       new_w = (new_w > 127) ? 127 : (new_w < -128) ? -128
                                                    : new_w;
 
