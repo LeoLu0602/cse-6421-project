@@ -12,18 +12,18 @@
 /////////////// HARDWARE BUDGET ////////////////
 // Budget: 128 KB
 //
-// GHR: 62 bits
-// Table: 2080 * (62 + 1) * 8 bits
+// GHR: 59 bits
+// Table: 512 * (59 + 1) * 8 bits
 //
-// 62 bits + 2080 * 63 * 8 bits ≈ 128 KB
+// 59 bits + 512 * 60 * 8 bits ≈ 30 KB
 ////////////////////////////////////////////////
 
 class PREDICTOR
 {
 private:
-  bitset<62> ghr;
+  bitset<59> ghr;
   // Use int8_t instead of int to fit more perceptrons under budget
-  int8_t table[2080][63];
+  int8_t table[512][60];
   int y;
 
 public:
