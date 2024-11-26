@@ -4,6 +4,7 @@
 
 #define HIST_LEN 62
 #define TABLE_LEN 512
+#define THRESHOLD floor(1.93 * HIST_LEN + 14)
 
 PREDICTOR::PREDICTOR(void)
 {
@@ -42,7 +43,7 @@ void PREDICTOR::UpdatePredictor(UINT32 PC, bool resolveDir, bool predDir, UINT32
 {
   UINT32 index = Hash(PC);
 
-  if (resolveDir != predDir || abs(y) <= floor(1.93 * HIST_LEN + 14))
+  if (resolveDir != predDir || abs(y) <= THRESHOLD)
   {
     int8_t t = resolveDir ? 1 : -1;
 
